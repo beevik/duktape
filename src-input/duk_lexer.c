@@ -919,6 +919,18 @@ DUK_LOCAL void duk__lexer_parse_string_literal(duk_lexer_ctx *lex_ctx, duk_token
 	return;
 }
 
+/* Skip a one-line comment. */
+DUK_LOCAL void duk__lexer_skip_line_comment(duk_lexer_ctx *lex_ctx) {
+	duk_codepoint_t x;
+
+	for (;;) {
+		x = DUK__L0();
+		if (x < 0 || duk_unicode_is_line_terminator(x)) {
+			break;
+		}
+		DUK__ADVANCECHARS(lex_ctx, 1);
+	}
+}
 /*
  *  Parse Ecmascript source InputElementDiv or InputElementRegExp
  *  (E5 Section 7), skipping whitespace, comments, and line terminators.
@@ -1057,6 +1069,13 @@ void duk_lexer_parse_js_input_element(duk_lexer_ctx *lex_ctx,
 		DUK__ADVANCECHARS(lex_ctx, 1);
 		got_lineterm = 1;
 		goto restart_lineupdate;
+	case DUK_ASC_HASH:  /* '#' */
+		if (DUK__L1() == DUK_ASC_EXCLAMATION && lex_ctx->window[0].offset == 0) {
+			/* DUK__ADVANCECHARS(lex_ctx, 2) would be correct here, but it unnecessary */
+			duk__lexer_skip_line_comment(lex_ctx);
+			goto restart;  /* line terminator will be handled on next round */
+		}
+		goto fail_token;
 	case DUK_ASC_SLASH:  /* '/' */
 		if (DUK__L1() == DUK_ASC_SLASH) {
 			/*
@@ -1065,13 +1084,7 @@ void duk_lexer_parse_js_input_element(duk_lexer_ctx *lex_ctx,
 			 */
 
 			/* DUK__ADVANCECHARS(lex_ctx, 2) would be correct here, but it unnecessary */
-			for (;;) {
-				x = DUK__L0();
-				if (x < 0 || duk_unicode_is_line_terminator(x)) {
-					break;
-				}
-				DUK__ADVANCECHARS(lex_ctx, 1);
-			}
+			duk__lexer_skip_line_comment(lex_ctx);
 			goto restart;  /* line terminator will be handled on next round */
 		} else if (DUK__L1() == DUK_ASC_STAR) {
 			/*
