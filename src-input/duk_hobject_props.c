@@ -2037,8 +2037,7 @@ DUK_LOCAL duk_tval *duk__getprop_shallow_fastpath_array_tval(duk_hthread *thr, d
 	if (!(DUK_HOBJECT_HAS_ARRAY_PART(obj) &&
 	     !DUK_HOBJECT_HAS_EXOTIC_ARGUMENTS(obj) &&
 	     !DUK_HOBJECT_HAS_EXOTIC_STRINGOBJ(obj) &&
-	     !DUK_HOBJECT_IS_BUFOBJ(obj) &&
-	     !DUK_HOBJECT_HAS_EXOTIC_PROXYOBJ(obj))) {
+	     !DUK_HOBJECT_IS_BUFOBJ(obj))) {
 		/* Must have array part and no conflicting exotic behaviors.
 		 * Doesn't need to have array special behavior, e.g. Arguments
 		 * object has array part.

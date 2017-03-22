@@ -1087,12 +1087,8 @@ duk_bool_t duk__get_identifier_reference(duk_hthread *thr,
 			 * property is found, but rather the object binding target object.
 			 */
 
-			if (DUK_HOBJECT_HAS_EXOTIC_PROXYOBJ(target)) {
-				DUK_ASSERT(name != NULL);
-				DUK_TVAL_SET_STRING(&tv_name, name);
-
-				found = duk_hobject_hasprop(thr, tv_target, &tv_name);
-			} else {
+			DUK_UNREF(tv_name);
+			{
 				/* XXX: duk_hobject_hasprop() would be correct for
 				 * non-Proxy objects too, but it is about ~20-25%
 				 * slower at present so separate code paths for

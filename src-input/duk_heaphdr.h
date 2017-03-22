@@ -89,8 +89,8 @@ struct duk_heaphdr_string {
 #define DUK_HEAPHDR_FLAGS_FLAG_MASK      (~DUK_HEAPHDR_FLAGS_TYPE_MASK)
 
                                              /* 2 bits for heap type */
-#define DUK_HEAPHDR_FLAGS_HEAP_START     2   /* 5 heap flags */
-#define DUK_HEAPHDR_FLAGS_USER_START     7   /* 25 user flags */
+#define DUK_HEAPHDR_FLAGS_HEAP_START     2   /* 6 heap flags */
+#define DUK_HEAPHDR_FLAGS_USER_START     8   /* 24 user flags */
 
 #define DUK_HEAPHDR_HEAP_FLAG_NUMBER(n)  (DUK_HEAPHDR_FLAGS_HEAP_START + (n))
 #define DUK_HEAPHDR_USER_FLAG_NUMBER(n)  (DUK_HEAPHDR_FLAGS_USER_START + (n))
@@ -102,6 +102,7 @@ struct duk_heaphdr_string {
 #define DUK_HEAPHDR_FLAG_FINALIZABLE     DUK_HEAPHDR_HEAP_FLAG(2)  /* mark-and-sweep: finalizable (on current pass) */
 #define DUK_HEAPHDR_FLAG_FINALIZED       DUK_HEAPHDR_HEAP_FLAG(3)  /* mark-and-sweep: finalized (on previous pass) */
 #define DUK_HEAPHDR_FLAG_READONLY        DUK_HEAPHDR_HEAP_FLAG(4)  /* read-only object, in code section */
+#define DUK_HEAPHDR_FLAG_ONFINLIST       DUK_HEAPHDR_HEAP_FLAG(5)  /* mark-and-sweep: on finalize list */
 
 #define DUK_HTYPE_MIN                    0
 #define DUK_HTYPE_STRING                 0
@@ -218,6 +219,10 @@ struct duk_heaphdr_string {
 #define DUK_HEAPHDR_SET_READONLY(h)       DUK_HEAPHDR_SET_FLAG_BITS((h),DUK_HEAPHDR_FLAG_READONLY)
 #define DUK_HEAPHDR_CLEAR_READONLY(h)     DUK_HEAPHDR_CLEAR_FLAG_BITS((h),DUK_HEAPHDR_FLAG_READONLY)
 #define DUK_HEAPHDR_HAS_READONLY(h)       DUK_HEAPHDR_CHECK_FLAG_BITS((h),DUK_HEAPHDR_FLAG_READONLY)
+
+#define DUK_HEAPHDR_SET_ONFINLIST(h)      DUK_HEAPHDR_SET_FLAG_BITS((h),DUK_HEAPHDR_FLAG_ONFINLIST)
+#define DUK_HEAPHDR_CLEAR_ONFINLIST(h)    DUK_HEAPHDR_CLEAR_FLAG_BITS((h),DUK_HEAPHDR_FLAG_ONFINLIST)
+#define DUK_HEAPHDR_HAS_ONFINLIST(h)      DUK_HEAPHDR_CHECK_FLAG_BITS((h),DUK_HEAPHDR_FLAG_ONFINLIST)
 
 /* get or set a range of flags; m=first bit number, n=number of bits */
 #define DUK_HEAPHDR_GET_FLAG_RANGE(h,m,n)  (((h)->h_flags >> (m)) & ((1UL << (n)) - 1UL))

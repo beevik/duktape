@@ -83,6 +83,7 @@ DUK_INTERNAL void duk_hobject_run_finalizer(duk_hthread *thr, duk_hobject *obj) 
 		return;
 	}
 	DUK_HEAPHDR_SET_FINALIZED((duk_heaphdr *) obj);  /* ensure never re-entered until rescue cycle complete */
+#if defined(DUK_USE_ES6_PROXY)
 	if (DUK_HOBJECT_HAS_EXOTIC_PROXYOBJ(obj)) {
 		/* This shouldn't happen; call sites should avoid looking up
 		 * _Finalizer "through" a Proxy, but ignore if we come here
@@ -91,6 +92,7 @@ DUK_INTERNAL void duk_hobject_run_finalizer(duk_hthread *thr, duk_hobject *obj) 
 		DUK_D(DUK_DPRINT("object is a proxy, skip finalizer call"));
 		return;
 	}
+#endif
 
 	/* XXX: use a NULL error handler for the finalizer call? */
 

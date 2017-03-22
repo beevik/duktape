@@ -4711,6 +4711,16 @@ DUK_EXTERNAL duk_idx_t duk_push_heapptr(duk_context *ctx, void *ptr) {
 	return ret;
 }
 
+DUK_EXTERNAL_DECL duk_bool_t duk_is_heapptr_valid(duk_context *ctx, void *ptr) {
+    if (ptr == NULL)
+        return 0;
+
+    DUK_UNREF(ctx);
+
+    duk_heaphdr *hdr = (duk_heaphdr *) ptr;
+    return !DUK_HEAPHDR_HAS_ONFINLIST(hdr);
+}
+
 /* Push object with no prototype, i.e. a "bare" object. */
 DUK_EXTERNAL duk_idx_t duk_push_bare_object(duk_context *ctx) {
 	(void) duk_push_object_helper(ctx,

@@ -775,6 +775,7 @@ DUK_LOCAL void duk__sweep_heap(duk_heap *heap, duk_int_t flags, duk_size_t *out_
 				DUK_HEAPHDR_SET_NEXT(heap, curr, heap->finalize_list);
 				DUK_ASSERT_HEAPHDR_LINKS(heap, curr);
 				heap->finalize_list = curr;
+                DUK_HEAPHDR_SET_ONFINLIST(curr);
 #if defined(DUK_USE_DEBUG)
 				count_finalize++;
 #endif
@@ -937,6 +938,7 @@ DUK_LOCAL void duk__run_object_finalizers(duk_heap *heap, duk_small_uint_t flags
 		next = DUK_HEAPHDR_GET_NEXT(heap, curr);
 		DUK_HEAP_INSERT_INTO_HEAP_ALLOCATED(heap, curr);
 
+        DUK_HEAPHDR_CLEAR_ONFINLIST(curr);
 		curr = next;
 #if defined(DUK_USE_DEBUG)
 		count++;

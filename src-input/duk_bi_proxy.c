@@ -146,4 +146,9 @@ DUK_INTERNAL duk_ret_t duk_bi_proxy_constructor(duk_context *ctx) {
  fail_args:
 	DUK_DCERROR_TYPE_INVALID_ARGS((duk_hthread *) ctx);
 }
+#else
+DUK_INTERNAL duk_ret_t duk_bi_proxy_constructor(duk_context *ctx) {
+    DUK_UNREF(ctx);
+    return 0;
+}
 #endif  /* DUK_USE_ES6_PROXY */
