@@ -208,8 +208,7 @@ DUK_INTERNAL void duk_heap_process_finalize_list(duk_heap *heap) {
 			 * won't be refzero processed prematurely.
 			 */
 #if defined(DUK_USE_REFERENCE_COUNTING)
-			had_zero_refcount = (DUK_HEAPHDR_GET_REFCOUNT(curr) == 0);
-			DUK_HEAPHDR_PREINC_REFCOUNT(curr);
+			had_zero_refcount = (DUK_HEAPHDR_GET_REFCOUNT(curr) == 1);  /* Preincremented on finalize_list insert. */
 #endif
 
 			DUK_ASSERT(!DUK_HEAPHDR_HAS_FINALIZED(curr));

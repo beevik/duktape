@@ -337,6 +337,9 @@ DUK_LOCAL DUK_INLINE void duk__refcount_refzero_hobject(duk_heap *heap, duk_hobj
 			DUK_HEAPHDR_SET_FINALIZABLE(hdr);
 			DUK_ASSERT(!DUK_HEAPHDR_HAS_FINALIZED(hdr));
 
+#if defined(DUK_USE_REFERENCE_COUNTING)
+			DUK_HEAPHDR_PREINC_REFCOUNT(hdr);  /* Bump refcount so that refzero never occurs when pending a finalizer call. */
+#endif
 			DUK_HEAP_INSERT_INTO_FINALIZE_LIST(heap, hdr);
 
 			/* Process finalizers unless skipping is explicitly

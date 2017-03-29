@@ -614,6 +614,9 @@ DUK_LOCAL void duk__sweep_heap(duk_heap *heap, duk_int_t flags, duk_size_t *out_
 				DUK_ASSERT(DUK_HEAPHDR_GET_TYPE(curr) == DUK_HTYPE_OBJECT);
 				DUK_DDD(DUK_DDDPRINT("object has finalizer, move to finalization work list: %p", (void *) curr));
 
+#if defined(DUK_USE_REFERENCE_COUNTING)
+				DUK_HEAPHDR_PREINC_REFCOUNT(curr);  /* Bump refcount so that refzero never occurs when pending a finalizer call. */
+#endif
 				DUK_HEAP_INSERT_INTO_FINALIZE_LIST(heap, curr);
 #if defined(DUK_USE_DEBUG)
 				count_finalize++;
